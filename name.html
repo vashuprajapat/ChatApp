@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      /* Set the background color */
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f5f5f5;
+      }
+
+      /* Center all elements horizontally */
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      /* Style the heading */
+      h1 {
+        font-size: 36px;
+        text-align: center;
+        margin-top: 50px;
+      }
+
+      h3 {
+        font-size: 18px;
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      /* Center the input and button inside the container */
+      .container1 {
+        width: 300px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      /* Center the input and button */
+      input[type="text"],
+      button {
+        /* display: block; */
+        /* margin: 0 auto;
+        width: 100%;
+        max-width: 280px; */
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1.2rem;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        width: 100%;
+      }
+
+      /* Style the button */
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 10px 2px;
+        cursor: pointer;
+        border-radius: 5px;
+      }
+
+      /* Add hover effect to the button */
+      button:hover {
+        background-color: #4d95e2;
+      }
+
+      #message-container {
+        margin-top: 10px;
+        border: 0px solid #ccc;
+        border-radius: 4px;
+        padding: 10px;
+        min-width: 100%;
+        max-width: 100%;
+        overflow-y: scroll;
+        height: 300px;
+      }
+
+      #message-container p {
+        margin: 5px 0;
+      }
+
+      #pvt-msg-container {
+        margin-top: 10px;
+        border: 0px solid #ccc;
+        border-radius: 4px;
+        padding: 10px;
+        min-width: 100%;
+        max-width: 100%;
+        overflow-y: scroll;
+        height: 300px;
+      }
+
+      #error-container {
+        text-align: center;
+        color: #ff0000;
+        padding: 10px;
+      }
+      .messageContainer {
+        display: inline-block;
+      }
+
+      /* Overall container */
+      .container {
+        display: flex;
+        flex-direction: column;
+        margin: auto;
+        max-width: 800px;
+        padding: 20px;
+      }
+
+      /* Greeting section */
+      .container h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      /* Recipient input field */
+      #recipient {
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1.2rem;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        width: 100%;
+      }
+
+      /* Message input field and Send button */
+      .messageContainer {
+        display: inline-block;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1.2rem;
+        width: 100%;
+        vertical-align: top;
+      }
+
+      #message {
+        width: 100%;
+      }
+
+      #send-btn {
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        width: 30%;
+      }
+
+      /* Public chat room and Private chat container */
+      h2 {
+        margin-top: 2rem;
+        font-size: 1.5rem;
+      }
+
+      #message-container,
+      #pvt-msg-container {
+        height: 200px;
+        overflow-y: scroll;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        padding: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      @media only screen and (max-width: 768px) {
+        /* Adjust spacing and font sizes */
+        .container {
+          padding: 10px;
+        }
+
+        .container h1 {
+          font-size: 1.5rem;
+          margin-bottom: 0.5rem;
+        }
+
+        #recipient {
+          font-size: 1rem;
+          margin-bottom: 0.5rem;
+        }
+
+        .messageContainer {
+          font-size: 1rem;
+          padding: 0.2rem;
+        }
+
+        /* Stack Recipient input field, Message input field, and Send button vertically */
+        .messageContainer,
+        #send-btn {
+          display: block !important;
+          width: 100% !important;
+        }
+
+        #message {
+          width: 100%;
+        }
+
+        /* Reduce the size of Public chat room and Private chat container */
+        h2 {
+          font-size: 1.2rem;
+        }
+
+        #message-container,
+        #pvt-msg-container {
+          height: 150px;
+          width: 100%;
+          margin-bottom: 1rem;
+        }
+      }
+
+      /* Responsive styles */
+      @media screen and (min-width: 768px) {
+        /* Center all elements horizontally */
+        .container {
+          height: auto;
+        }
+
+        /* Center the input and button */
+        input[type="text"],
+        button {
+          display: inline-block;
+          margin: 0;
+          width: auto;
+          max-width: none;
+        }
+      }
+    </style>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+      function setUsername() {
+        var name = document.getElementById("name").value;
+        if (name) {
+          socket.emit("setUsername", document.getElementById("name").value);
+        } else {
+          alert("Please enter a username ");
+        }
+      }
+      var user;
+      var userList = [];
+      socket.on("userExists", function (data) {
+        document.getElementById("error-container").innerHTML = data;
+      });
+
+      socket.on("userSet", function (data) {
+        user = data.username;
+        userList = data.userList; // add the user to the list
+        document.body.innerHTML = `<div class='container'><h2>Hello, ${user}</h2><br>\
+          <input id="recipient" type="text" name="recipient" value="" placeholder="To send private message enter recipient username"><br>\
+          <textarea class="messageContainer" id="message" placeholder="Enter message here"></textarea>\
+          <button id="send-btn" class="messageContainer" type="button" name="button" onclick="sendMessage()">Send</button>\
+          <h2>Public Chat room</h2>\
+           <div id="message-container"></div>\
+           <h2>Private chat</h2>\
+        <div id="pvt-msg-container"></div></div>`;
+      });
+      function sendMessage() {
+        var msg = document.getElementById("message").value;
+        document.getElementById("message").value = "";
+        if (msg) {
+          var recipient = document.getElementById("recipient").value; // get the recipient's name from the input field
+          document.getElementById("recipient").value = "";
+          if (recipient) {
+            if (userList.includes(recipient)) {
+              // check if the recipient is valid
+              socket.emit("pm", {
+                message: msg,
+                sender: user,
+                recipient: recipient,
+                count: 0,
+                date: `${new Date().getHours()}:${new Date().getMinutes()}`,
+              });
+            } else {
+              alert("Invalid recipient"); // show an error message if the recipient is invalid
+            }
+          } else {
+            socket.emit("msg", {
+              message: msg,
+              user: user,
+              count: 0,
+              date: `${new Date().getHours()}:${new Date().getMinutes()}`,
+            });
+          }
+        }
+      }
+      socket.on("newmsg", function (data) {
+        if (data.user === "Chat Bot") {
+          userList = data.userList;
+        }
+        if (user && data.count === 0) {
+          data.count = data.count + 1;
+          document.getElementById("message-container").innerHTML +=
+            "<div><b>" +
+            data.user +
+            "</b>(" +
+            data.date +
+            "): " +
+            data.message +
+            "</div>";
+          // Scroll to the bottom of the message container
+          var messageContainer = document.getElementById("message-container");
+          messageContainer.scrollTop = messageContainer.scrollHeight;
+        }
+      });
+      socket.on("pnewmsg", function (data) {
+        // userList = data.userList;
+        if (user && data.count === 0) {
+          data.count = data.count + 1;
+          if (data.sender === user) {
+            // check if the message is a private message for the current user
+            document.getElementById("pvt-msg-container").innerHTML +=
+              "<div><b>Message sent to " +
+              data.recipient +
+              "</b>(" +
+              data.date +
+              "): " +
+              data.message +
+              "</div>";
+
+            // Scroll to the bottom of the private message container
+            var pvtMsgContainer = document.getElementById("pvt-msg-container");
+            pvtMsgContainer.scrollTop = pvtMsgContainer.scrollHeight;
+          }
+          if (data.recipient === user) {
+            // check if the message is a private message for the current user
+            document.getElementById("pvt-msg-container").innerHTML +=
+              "<div><b>Private message from " +
+              data.sender +
+              "</b>(" +
+              data.date +
+              "): " +
+              data.message +
+              "</div>";
+
+            // Scroll to the bottom of the private message container
+            var pvtMsgContainer = document.getElementById("pvt-msg-container");
+            pvtMsgContainer.scrollTop = pvtMsgContainer.scrollHeight;
+          }
+        }
+      });
+    </script>
+    <title>VPMOTION CHAT</title>
+  </head>
+  <body>
+    <div id="error-container"></div>
+    <h1>welcome to VPMOTION CHAT app</h1>
+    <h3>Please enter your name to join chat</h3>
+    <div class="container1">
+      <input
+        id="name"
+        type="text"
+        name="name"
+        value=""
+        placeholder="Enter your user name!"
+      /><br />
+      <button type="button" name="button" onclick="setUsername()">
+        Let me chat!
+      </button>
+    </div>
+  </body>
+</html>

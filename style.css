@@ -1,0 +1,114 @@
+/* Add the CSS code here */
+/* Set the background color */
+body {
+  background-color: #f2f2f2;
+}
+
+/* Center all elements horizontally */
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.radio {
+  display: flex;
+  color: red;
+}
+
+/* Style the heading */
+h1,
+h3 {
+  color: #4caf50;
+  text-align: center;
+}
+
+/* Center the input and button inside the container */
+.container input,
+.container button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+/* Center the input and button */
+input[type="text"],
+button {
+  /* display: block; */
+  margin: 0 auto;
+  width: 100%;
+  max-width: 280px;
+}
+
+/* Style the button */
+button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px 2px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+/* Add hover effect to the button */
+button:hover {
+  background-color: #3e8e41;
+}
+
+#message-container {
+  margin-top: 10px;
+  border: 0px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  min-width: 500px;
+  max-width: 500px;
+  overflow-y: scroll;
+  height: 300px;
+}
+
+#message-container p {
+  margin: 5px 0;
+}
+
+#pvt-msg-container {
+  margin-top: 10px;
+  border: 0px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  min-width: 500px;
+  max-width: 500px;
+  overflow-y: scroll;
+  height: 300px;
+}
+
+#error-container {
+  text-align: center;
+  color: #ff0000;
+  padding: 10px;
+}
+.messageContainer {
+  display: inline-block;
+}
+
+/* Responsive styles */
+@media screen and (min-width: 768px) {
+  /* Center all elements horizontally */
+  .container {
+    height: auto;
+  }
+
+  /* Center the input and button */
+  input[type="text"],
+  button {
+    display: inline-block;
+    margin: 0;
+    width: auto;
+    max-width: none;
+  }
+}
